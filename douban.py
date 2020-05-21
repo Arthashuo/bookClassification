@@ -1,6 +1,3 @@
-from bs4 import BeautifulSoup as bs
-import requests as  rq
-import urllib.request
 import time
 import  re
 import random
@@ -177,3 +174,4 @@ print('经济——门类全部收录完毕！')
 #第二步，循环打开详情页，爬取图书的详细信息。在此仅用1个商品页面作为示例。
 #发现收集到的图书链接有重复的，所以后面批量抓取时，必须进行去重。
 # get_book_info('http://product.dangdang.com/23274638.html')
+

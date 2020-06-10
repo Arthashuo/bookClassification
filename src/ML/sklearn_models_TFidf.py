@@ -10,6 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn import metrics
+# -*- coding: utf-8 -*-
 from __init__ import *
 from src.utils import config
 from src.utils.tools import create_logger, wam

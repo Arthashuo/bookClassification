@@ -3,9 +3,8 @@ import numpy as np
 import pandas as pd
 import lightgbm as lgb
 from sklearn import preprocessing
-from sklearn.naive_bayes import MultinomialNB, GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn import metrics
@@ -13,7 +12,6 @@ from __init__ import *
 from sklearn.externals import joblib
 from src.utils import config
 from src.utils.tools import create_logger
-from src.Pre_process.mlData import MLData
 from src.utils.config import root_path
 from gensim import models
 logger = create_logger(
@@ -110,13 +108,15 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
     # 构建训练模型并训练及预测
     Embedding_flag = "Fast_embedding"
     models = [
-        RandomForestClassifier(
-            n_estimators=500, criterion='entropy', max_depth=3, max_features=0.6, max_leaf_nodes=30),
+        RandomForestClassifier(n_estimators=500, criterion='entropy',
+        max_depth=3, max_features=0.6, max_leaf_nodes=30),
         LogisticRegression(solver='liblinear', random_state=0),
         MultinomialNB(),
         SVC(),
-        lgb.LGBMClassifier(objective='multiclass', n_jobs=10, num_class=33, num_leaves=30, reg_alpha=10, reg_lambda=200,
-                           max_depth=3, learning_rate=0.05, n_estimators=2000, bagging_freq=1, bagging_fraction=0.8, feature_fraction=0.8),
+        lgb.LGBMClassifier(objective='multiclass', n_jobs=10, num_class=33,
+        num_leaves=30, reg_alpha=10, reg_lambda=200,
+        max_depth=3, learning_rate=0.05, n_estimators=2000,
+        bagging_freq=1, bagging_fraction=0.8, feature_fraction=0.8),
     ]
     # 遍历模型
     for model in models:
@@ -132,31 +132,33 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
             Test_predict_label = clf.predict(Test_features)
             Train_predict_label = clf.predict(Train_features)
         # 输出训练集的准确率
-        print(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' % metrics.accuracy_score(
-            Train_label, Train_predict_label))
-        logger.info(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' % metrics.accuracy_score(
-            Train_label, Train_predict_label))
+        print(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' %
+              metrics.accuracy_score(Train_label, Train_predict_label))
+        logger.info(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' %
+                    metrics.accuracy_score(Train_label, Train_predict_label))
         # 输出测试集的准确率
-        print(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' % metrics.accuracy_score(
-            Test_label, Test_predict_label))
-        logger.info(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' % metrics.accuracy_score(
-            Test_label, Test_predict_label))
+        print(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' %
+              metrics.accuracy_score(Test_label, Test_predict_label))
+        logger.info(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' %
+                    metrics.accuracy_score(Test_label, Test_predict_label))
         # 输出recall
-        print(Embedding_flag+"_"+model_name+'_'+'test recall %s' % metrics.recall_score(
-            Test_label, Test_predict_label, average='micro'))
-        logger.info(Embedding_flag+"_"+model_name+'_'+'test recall %s' % metrics.recall_score(
-            Test_label, Test_predict_label, average='micro'))
+        print(Embedding_flag+"_"+model_name+'_'+'test recall %s' %
+              metrics.recall_score(Test_label, Test_predict_label,
+                                   average='micro'))
+        logger.info(Embedding_flag+"_"+model_name+'_'+'test recall %s' %
+                    metrics.recall_score(Test_label, Test_predict_label,
+                                         average='micro'))
         # 输出F1-score
-        print(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' % metrics.f1_score(Test_label,
-            Test_predict_label, average='weighted'))
-        logger.info(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' % metrics.f1_score(Test_label,
-                        Test_predict_label, average='weighted'))
+        print(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' %
+              metrics.f1_score(Test_label, Test_predict_label,
+                               average='weighted'))
+        logger.info(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' %
+                    metrics.f1_score(Test_label, Test_predict_label,
+                                     average='weighted'))
         # 输出精确率
-        print(Embedding_flag+"_"+model_name+'_'+'test precision_score %s' % metrics.precision_score(
-            Test_label, Test_predict_label, average='micro'))
-
-        logger.info(Embedding_flag+"_"+model_name+'_'+'test precision_score %s' % metrics.precision_score(
-            Test_label, Test_predict_label, average='micro'))
+        print(Embedding_flag+"_"+model_name+'_'+'test precision_score %s' %
+              metrics.precision_score(Test_label, Test_predict_label,
+                                      average='micro'))
         # 输出模型预测错误的类别信息
         # 找出该模型分类错误的样本下标
         predict_error_list = np.argwhere(
@@ -180,7 +182,8 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
 
             logger.info("预测错误样本的text{},预测标签:{},样本的真实标签:{}".format(
                 np.array(test["queryCutRMStopWord"])[predict_error_list[k]],
-                labelIndexToName[int(Test_predict_label[predict_error_list[k]])], labelIndexToName[int(Test_label[predict_error_list[k]])]))
+                labelIndexToName[int(Test_predict_label[predict_error_list[k]])],
+                labelIndexToName[int(Test_label[predict_error_list[k]])]))
 
             if count_number >= 5*len(labelIndex):  # 即每个类别都输出了五个预测错误的样本
                 break

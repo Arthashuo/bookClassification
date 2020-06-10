@@ -1,30 +1,22 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
 from collections import Counter
-from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB, GaussianNB
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
 import lightgbm as lgb
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn import metrics
-# -*- coding: utf-8 -*-
 from __init__ import *
 from src.utils import config
-from src.utils.tools import create_logger, wam
-from src.Embedding.embedding import Embedding
+from src.utils.tools import create_logger
 from sklearn.externals import joblib
-import joblib
-from src.utils.tools import Translate_array
 from src.utils.config import root_path
 
 logger = create_logger(
     config.log_dir + 'sklearn_models_TDIDF_embeddings6000.log')
-
-# em = Embedding()  # 创建embedding类的对象
-# em.load()
 
 Embedding_flag = "TF-IDF6000"
 train = pd.read_csv(root_path +
@@ -97,9 +89,7 @@ def TF_Idf():
     trainText = [' '.join(query) for query in train["queryCutRMStopWord"]]
     testText = [' '.join(query) for query in test["queryCutRMStopWord"]]
     print(type(trainText))
-    # AllText = trainText+testText
-    # 计算tf-idf值
-    # vectorizer = CountVectorizer()  # 获取词袋模型中的所有词语
+
     stopWords = open(root_path + '/data/stopwords.txt').readlines()
     vectorizer = TfidfVectorizer(
         stop_words=stopWords,  max_df=0.4, min_df=0.001, ngram_range=(1, 2))
@@ -110,7 +100,7 @@ def TF_Idf():
     print(type(Train_features), type(Test_features))
     # 生成训练集与测试集，其中x为所计算的tfidf值
 
-############################################################
+#####################################
     Train_label = train["labelIndex"]
     Test_label = test["labelIndex"]
     print("计算TF-idf")
@@ -126,36 +116,44 @@ def TF_Idf():
 
 
 
-def Predict(model_name,Train_label, Test_label, Train_predict_label, Test_predict_label):
+def Predict(model_name, Train_label, Test_label,
+            Train_predict_label, Test_predict_label):
     # 输出训练集的准确率
-    print(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' % metrics.accuracy_score(
-        Train_label, Train_predict_label))
+    print(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' %
+            metrics.accuracy_score(Train_label, Train_predict_label))
+
     logger.info(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' %
-     metrics.accuracy_score(Train_label, Train_predict_label))
+            metrics.accuracy_score(Train_label, Train_predict_label))
+
     # 输出测试集的准确率
-    print(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' % metrics.accuracy_score(
-        Test_label, Test_predict_label))
-    logger.info(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' % metrics.accuracy_score(
-        Test_label, Test_predict_label))
+    print(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' %
+        metrics.accuracy_score(Test_label, Test_predict_label))
+
+    logger.info(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' %
+            metrics.accuracy_score(Test_label, Test_predict_label))
+
     # 输出recall
-    print(Embedding_flag+"_"+model_name+'_'+'test recall %s' % metrics.recall_score(
-        Test_label, Test_predict_label, average='micro'))
-    logger.info(Embedding_flag+"_"+model_name+'_'+'test recall %s' % metrics.recall_score(
-        Test_label, Test_predict_label, average='micro'))
+    print(Embedding_flag+"_"+model_name+'_'+'test recall %s' %
+        metrics.recall_score(Test_label, Test_predict_label,
+                    average='micro'))
+
+    logger.info(Embedding_flag+"_"+model_name+'_'+'test recall %s' %
+        metrics.recall_score(Test_label, Test_predict_label,
+                    average='micro'))
     # 输出F1-score
     print(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' %
-     metrics.f1_score(Test_label,Test_predict_label, average='weighted'))
-    logger.info(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' %
-     metrics.f1_score(Test_label,Test_predict_label ,average='weighted'))
-    # 输出精确率
-    print(Embedding_flag+"_"+model_name+'_'+'test precision_score %s' % metrics.precision_score(
-        Test_label, Test_predict_label, average='micro'))
-    logger.info(Embedding_flag+"_"+model_name+'_'+'test precision_score %s' % metrics.precision_score(
-        Test_label, Test_predict_label, average='micro'))
+        metrics.f1_score(Test_label, Test_predict_label,
+                average='weighted'))
 
-    predict_error_list = np.argwhere(
-        np.array(Test_predict_label-Test_label) != 0)
-    # 输出预测错误的前100个样本信息
+    logger.info(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' %
+            metrics.f1_score(Test_label, Test_predict_label,
+                    average='weighted'))
+    # 输出精确率
+    print(Embedding_flag+"_"+model_name+'_'+'test precision_score %s' %
+            metrics.precision_score(Test_label, Test_predict_label,
+                    average='micro'))
+
+    predict_error_list = np.argwhere(np.array(Test_predict_label-Test_label)!= 0)
     print("使用的词嵌入类型{},使用模型:{}".format("TFidf_embedding", model_name))
     # 每个类别输出5个错误的样本，Dcit02用于计数。
     Dict02 = {}
@@ -201,7 +199,7 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
         Train_predict_label = clf.predict(Train_features)
         Predict(model_name,Train_label, Test_label,
                 Train_predict_label, Test_predict_label)
-    #############################################################
+    #########################################
     # # 保存训练好的模型
     joblib.dump(model, root_path +
                 '/src/ML/Saved_ML_Models/'+Embedding_flag+"_"+model_name+'.pkl')

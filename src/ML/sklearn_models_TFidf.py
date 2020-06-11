@@ -111,47 +111,42 @@ def TF_Idf():
 
     return Train_features, Test_features, Train_label, Test_label
 
-#########################################
-
-
-
-
 def Predict(model_name, Train_label, Test_label,
             Train_predict_label, Test_predict_label):
     # 输出训练集的准确率
     print(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' %
-            metrics.accuracy_score(Train_label, Train_predict_label))
+          metrics.accuracy_score(Train_label, Train_predict_label))
 
     logger.info(Embedding_flag+"_"+model_name+'_'+'Train accuracy %s' %
-            metrics.accuracy_score(Train_label, Train_predict_label))
+                metrics.accuracy_score(Train_label, Train_predict_label))
 
     # 输出测试集的准确率
     print(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' %
-        metrics.accuracy_score(Test_label, Test_predict_label))
+          metrics.accuracy_score(Test_label, Test_predict_label))
 
     logger.info(Embedding_flag+"_"+model_name+'_'+'test accuracy %s' %
-            metrics.accuracy_score(Test_label, Test_predict_label))
+                metrics.accuracy_score(Test_label, Test_predict_label))
 
     # 输出recall
     print(Embedding_flag+"_"+model_name+'_'+'test recall %s' %
-        metrics.recall_score(Test_label, Test_predict_label,
-                    average='micro'))
+          metrics.recall_score(Test_label, Test_predict_label,
+                               average='micro'))
 
     logger.info(Embedding_flag+"_"+model_name+'_'+'test recall %s' %
-        metrics.recall_score(Test_label, Test_predict_label,
-                    average='micro'))
+                metrics.recall_score(Test_label, Test_predict_label,
+                                     average='micro'))
     # 输出F1-score
     print(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' %
-        metrics.f1_score(Test_label, Test_predict_label,
-                average='weighted'))
+          metrics.f1_score(Test_label, Test_predict_label,
+                           average='weighted'))
 
     logger.info(Embedding_flag+"_"+model_name+'_'+'test F1_score %s' %
-            metrics.f1_score(Test_label, Test_predict_label,
-                    average='weighted'))
+                metrics.f1_score(Test_label, Test_predict_label,
+                                 average='weighted'))
     # 输出精确率
     print(Embedding_flag+"_"+model_name+'_'+'test precision_score %s' %
-            metrics.precision_score(Test_label, Test_predict_label,
-                    average='micro'))
+          metrics.precision_score(Test_label, Test_predict_label,
+                                  average='micro'))
 
     predict_error_list = np.argwhere(np.array(Test_predict_label-Test_label)!= 0)
     print("使用的词嵌入类型{},使用模型:{}".format("TFidf_embedding", model_name))
@@ -171,8 +166,10 @@ def Predict(model_name, Train_label, Test_label,
             else:
                 continue
 
-        logger.info("预测错误样本的text{},预测标签:{},样本的真实标签:{}".format(np.array(test["queryCutRMStopWord"])[predict_error_list[k]],
-        labelIndexToName[int(Test_predict_label[predict_error_list[k]])], labelIndexToName[int(Test_label[predict_error_list[k]])]))
+        logger.info("预测错误样本的text{},预测标签:{},样本的真实标签:{}".
+                    format(np.array(test["queryCutRMStopWord"])[predict_error_list[k]],
+                           labelIndexToName[int(Test_predict_label[predict_error_list[k]])],
+                           labelIndexToName[int(Test_label[predict_error_list[k]])]))
 
         if count_number >= 5*len(labelIndex):  # 即每个类别都输出了五个预测错误的样本
             break
@@ -197,12 +194,12 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
         clf = model.fit(Train_features, Train_label)
         Test_predict_label = clf.predict(Test_features)
         Train_predict_label = clf.predict(Train_features)
-        Predict(model_name,Train_label, Test_label,
+        Predict(model_name, Train_label, Test_label,
                 Train_predict_label, Test_predict_label)
     #########################################
     # # 保存训练好的模型
-    joblib.dump(model, root_path +
-                '/src/ML/Saved_ML_Models/'+Embedding_flag+"_"+model_name+'.pkl')
+    joblib.dump(model, root_path +'/src/ML/Saved_ML_Models/'+
+                Embedding_flag+"_"+model_name+'.pkl')
 
 
 if __name__ == "__main__":

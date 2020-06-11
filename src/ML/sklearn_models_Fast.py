@@ -109,14 +109,14 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
     Embedding_flag = "Fast_embedding"
     models = [
         RandomForestClassifier(n_estimators=500, criterion='entropy',
-        max_depth=3, max_features=0.6, max_leaf_nodes=30),
+                               max_depth=3, max_features=0.6, max_leaf_nodes=30),
         LogisticRegression(solver='liblinear', random_state=0),
         MultinomialNB(),
         SVC(),
         lgb.LGBMClassifier(objective='multiclass', n_jobs=10, num_class=33,
-        num_leaves=30, reg_alpha=10, reg_lambda=200,
-        max_depth=3, learning_rate=0.05, n_estimators=2000,
-        bagging_freq=1, bagging_fraction=0.8, feature_fraction=0.8),
+                           num_leaves=30, reg_alpha=10, reg_lambda=200,
+                           max_depth=3, learning_rate=0.05, n_estimators=2000,
+                           bagging_freq=1, bagging_fraction=0.8, feature_fraction=0.8),
     ]
     # 遍历模型
     for model in models:
@@ -124,8 +124,6 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
         clf = model.fit(Train_features, Train_label)
         print("使用的词嵌入类型{},使用模型:{}".format(embedding_flag, model_name))
         if model_name == 'LGBMClassifier':
-           # Test_predict_label = np.argmax(clf.predict(Test_features), axis=1)
-            # Train_predict_label = np.argmax(clf.predict(Train_features), axis=1)
             Test_predict_label = clf.predict(Test_features)
             Train_predict_label = clf.predict(Train_features)
         else:
@@ -181,16 +179,16 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
                     continue
 
             logger.info("预测错误样本的text{},预测标签:{},样本的真实标签:{}".format(
-                np.array(test["queryCutRMStopWord"])[predict_error_list[k]],
-                labelIndexToName[int(Test_predict_label[predict_error_list[k]])],
-                labelIndexToName[int(Test_label[predict_error_list[k]])]))
+                        np.array(test["queryCutRMStopWord"])[predict_error_list[k]],
+                        labelIndexToName[int(Test_predict_label[predict_error_list[k]])],
+                        labelIndexToName[int(Test_label[predict_error_list[k]])]))
 
             if count_number >= 5*len(labelIndex):  # 即每个类别都输出了五个预测错误的样本
                 break
 
         # 保存训练好的模型
-        joblib.dump(model, root_path +
-                    '/src/ML/Saved_ML_Models/'+Embedding_flag+"_"+model_name+'.pkl')
+        joblib.dump(model, root_path + '/src/ML/Saved_ML_Models/'
+                    +Embedding_flag+"_"+model_name+'.pkl')
 
 
 if __name__ == "__main__":

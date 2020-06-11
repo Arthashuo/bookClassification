@@ -170,8 +170,7 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
         count_number = 0
         for k in range(len(predict_error_list)):
             if int(Test_predict_label[predict_error_list[k]]) not in Dict02.keys():
-                Dict02[int(Test_predict_label[predict_error_list[k]])] =
-                list(predict_error_list[k])
+                Dict02[int(Test_predict_label[predict_error_list[k]])] = list(predict_error_list[k])
                 count_number = count_number+1
             else:
                 if len(Dict02[int(Test_predict_label[predict_error_list[k]])]) < 5:
@@ -192,8 +191,8 @@ def Train_and_Test(Train_features, Test_features, Train_label, Test_label):
 
         # 保存训练好的模型
 
-        joblib.dump(model, root_path +
-            '/src/ML/Saved_ML_Models/'+Embedding_flag+"_"+model_name+'.pkl')
+        joblib.dump(model, root_path + '/src/ML/Saved_ML_Models/'
+                    +Embedding_flag+"_"+model_name+'.pkl')
 
 
 if __name__ == "__main__":

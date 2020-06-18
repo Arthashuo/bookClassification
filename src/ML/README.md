@@ -1,11 +1,5 @@
-## 文件介绍与运行说明
-### sklearn_models_TFidf.py 实现了基于TF-idf模型产生的词向量训练各种传统机器学习模型  可以直接通过 python sklearn_models_TFidf.py直接运行
-### sklearn_features_Fast.py 实现了基于FastText模型产生的词向量训练各种传统机器学习模型  可以直接通过 python sklearn_features_Fast.py直接运行
-### sklearn_features_w2v.py 实现了基于Word2Vec模型产生的词向量训练各种传统机器学习模型  可以直接通过 python sklearn_features_w2v.py直接运行
-
-
 ## 实验结果
-### 实验1
+### 实验1.
 TF-IDF(6000个词表,max_df=0.4, min_df=0.001)         
 
 |    | #Train.acc  |   #Test.acc   |
